@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.ActionBarActivity">
+
+    <item android:id="@+id/action_home"
+        android:title="@string/menu_home"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/outline_home_24" />
+    <item android:id="@+id/action_catalog"
+        android:title="@string/menu_catalog"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/outline_menu_book_24" />
+    <item android:id="@+id/action_add"
+        android:title="@string/menu_add"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/outline_add_24" />
+    <item android:id="@+id/action_favorite"
+        android:title="@string/menu_favorite"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/outline_favorite_24" />
+    <item android:id="@+id/action_account"
+        android:title="@string/menu_account"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/outline_account_circle_24"/>
+</menu>

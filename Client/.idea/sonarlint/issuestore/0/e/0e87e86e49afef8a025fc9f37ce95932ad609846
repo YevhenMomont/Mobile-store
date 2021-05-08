@@ -1,0 +1,13 @@
+
+Z
+java:S1874f">Remove this use of "startActivityForResult"; it is deprecated.(°£ÅD8åù­¹”/
+E
+java:S1604@"(Make this anonymous inner class a lambda(°¯èù8ª¾³½”/
+]	java:S125E"<This block of commented-out lines of code should be removed.(½İş€üÿÿÿÿ8ª¾³½”/
+W	java:S125]"<This block of commented-out lines of code should be removed.(ÚäÜE8•£§¼”/
+X	java:S125v"<This block of commented-out lines of code should be removed.(³Å¾ğ8•£§¼”/
+W	java:S125j"<This block of commented-out lines of code should be removed.(õÓQ8•£§¼”/
+]	java:S125/"<This block of commented-out lines of code should be removed.(£÷÷¡ÿÿÿÿÿ8•£§¼”/
+]	java:S125G"<This block of commented-out lines of code should be removed.(È¨¦¶úÿÿÿÿ8ª¾³½”/
+K
+java:S1659+")Declare "description" on a separate line.( ïŒìúÿÿÿÿ8åù­¹”/
