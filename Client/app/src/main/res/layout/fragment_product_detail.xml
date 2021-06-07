@@ -11,9 +11,9 @@
     <ImageView
         android:id="@+id/product_image"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/images"
-        android:layout_margin="30dp"/>
+        android:layout_height="300dp"
+        android:layout_margin="30dp"
+        android:src="@drawable/outline_shopping_basket_24" />
 
     <TextView
         android:id="@+id/product_name"
@@ -32,57 +32,77 @@
         android:textSize="30sp" />
 
     <RatingBar
+        android:id="@+id/product_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:isIndicator="false"
-        android:numStars="5" />
-
+        android:layout_marginLeft="65dp"
+        android:clickable="true"
+        android:numStars="5"
+        android:focusable="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/product_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#CC0B0B"
-            android:textSize="30sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#CC0B0B"
-            android:layout_marginLeft="3dp"
-            android:text="@string/grn"
-            android:textSize="30sp" />
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_alignParentStart="true"
+                android:textColor="#CC0B0B"
+                android:textSize="30sp" />
 
-        <ImageView
-            android:id="@+id/basket"
-            android:layout_width="39dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/outline_shopping_basket_24"
-            android:clickable="true"
-            app:tint="@color/authentication_gradient"
-            android:focusable="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/product_price"
+                android:text="@string/grn"
+                android:textColor="#CC0B0B"
+                android:textSize="30sp" />
+
+            <!--<ImageView
+                android:id="@+id/basket"
+                android:layout_width="39dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/outline_shopping_basket_24"
+                android:clickable="true"
+                app:tint="@color/authentication_gradient"
+                android:focusable="true" />-->
+
+            <Button
+                android:id="@+id/purchaseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:background="@drawable/buttons"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:text="Buy product"
+                android:translationZ="4dp"
+                app:backgroundTint="#1EC3C3" />
+
+            <Button
+                android:id="@+id/go_to_edit_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/purchaseButton"
+                android:background="@drawable/buttons"
+                android:visibility="invisible"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:text="Edit this item"
+                app:backgroundTint="#1EC3C3" />
+
+        </RelativeLayout>
 
     </LinearLayout>
-
-    <!--<ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_view"
-        android:layout_weight="3"
-        android:src="@drawable/outline_favorite_24"
-        />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/select_image"
-        android:text="Select image"
-        />-->
 
 </LinearLayout>
 

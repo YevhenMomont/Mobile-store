@@ -1,10 +1,4 @@
 
-W	java:S125R"<This block of commented-out lines of code should be removed.(àÌÛ8à°Ø‹”/
-C
-java:S1659"&Declare "password" on a separate line.(…é¶ê8õ—À“/
-]	java:S125J"<This block of commented-out lines of code should be removed.(€åğ¿øÿÿÿÿ8à°Ø‹”/
-]	java:S1259"<This block of commented-out lines of code should be removed.(ÿƒı§üÿÿÿÿ8áÀß¼”/
-K
-java:S1128".Remove this unused import 'java.util.Objects'.(¼¸õ›8£òò‹”/
-q
-java:S1450"TRemove the "login" field and declare it as a local variable in the relevant methods.(õ¸€§8±¾ ‹”/
+J	java:S108V")Either remove or fill this block of code.(üÍØûÿÿÿÿ8Ã…ê±˜/
+H
+java:S1659"&Declare "password" on a separate line.(ÀŠ­ıÿÿÿÿ8ƒÊ¸•/

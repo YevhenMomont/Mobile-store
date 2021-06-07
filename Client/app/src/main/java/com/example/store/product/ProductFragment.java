@@ -2,33 +2,54 @@ package com.example.store.product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.store.MainActivity;
 import com.example.store.R;
+import com.example.store.catalog.Category;
+import com.example.store.web.WebService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ProductFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private final List<Product> products = new ArrayList<>() ;
+public class ProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private SwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
-    private BottomNavigationView bottomNavigationView;
+    private List<Product> products;
+
+    SwipeRefreshLayout refreshLayout;
+
+    RecyclerView recyclerView;
+
+    BottomNavigationView bottomNavigationView;
+
+    ProgressBar progressBar;
 
     private Bundle args;
 
-    private FragmentTransaction fragmentTransaction;
+    FragmentTransaction fragmentTransaction;
 
+    Category category;
+
+    ProductAdapter productAdapter;
+
+    ProductAdapter.onStateClickListener listener;
 
 
     @Override
@@ -36,58 +57,173 @@ public class ProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_products, container, false);
 
+        setHasOptionsMenu(true);
+
+        if (getArguments() != null) {
+            category = (Category) getArguments().getSerializable("category");
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle(category.getTitle());
+        } else {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Store");
+        }
+
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigationView.setVisibility(View.VISIBLE);
 
         fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
         refreshLayout = view.findViewById(R.id.refresh);
+        refreshLayout.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
+        refreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        refreshLayout.post(() -> {
+            refreshLayout.setRefreshing(true);
+
+            initiliazeData(true, false, false, false);
+        });
 
         recyclerView = view.findViewById(R.id.list_of_products);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        initiliazeData();
+        progressBar = view.findViewById(R.id.progressBar);
 
-        ProductAdapter.onStateClickListener listener = new ProductAdapter.onStateClickListener() {
-            @Override
-            public void onStateClick(Product product, int position) {
-                args = new Bundle();
-                args.putSerializable("product", product);
-                ProductDetailFragment fragment = new ProductDetailFragment();
-                fragment.setArguments(args);
+        progressBar.setVisibility(View.VISIBLE);
 
+        initiliazeData(true, false, false, false);
 
-                bottomNavigationView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.INVISIBLE);
 
-                fragmentTransaction.replace(getId(), fragment);
-                fragmentTransaction.commit();
-            }
+        listener = (product, position) -> {
+            args = new Bundle();
+            args.putSerializable("product", product);
+
+            ProductDetailFragment fragment = new ProductDetailFragment();
+
+            fragment.setArguments(args);
+
+            fragmentTransaction.replace(getId(), fragment);
+            fragmentTransaction.commit();
         };
 
-        ProductAdapter productAdapter = new ProductAdapter(listener, getContext(), products);
 
-
-        recyclerView.setAdapter(productAdapter);
-
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                initiliazeData();
-            }
-        });
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.recommend_items, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.open_cosine_similarity:
+                item.setChecked(true);
+                initiliazeData(false, true, false, false);
+                return true;
+            case R.id.open_mse:
+                item.setChecked(true);
+                initiliazeData(false, false, false, true);
+                return true;
+            case R.id.open_pearson_correlation:
+                item.setChecked(true);
+                initiliazeData(false, false, true, false);
+                return true;
+        }
+        return false;
     }
 
     public static ProductFragment newInstance() {
         return new ProductFragment();
     }
 
-    private void initiliazeData() {
-        /*URL url = new URL("https://www.google.com/imgres?imgurl=https%3A%2F%2Fwww.goha.ru%2Fs%2FA%3ABC%2FC1%2FMy8mdJip6W.jpg&imgrefurl=https%3A%2F%2Fwww.goha.ru%2Fgames%2Fsubnautica-below-zero&tbnid=F26XZtQs5L2xmM&vet=12ahUKEwjnlovikPnvAhVICuwKHa1AD00QMygCegUIARCwAQ..i&docid=mt3IIziYB6pszM&w=1200&h=675&q=Subnautica%3A%20Below%20Zero%20%D0%B2%D1%8B%D1%85%D0%BE%D0%B4%20%D1%81%20%D0%B0%D0%BB%D1%8C%D1%84%D0%B0&client=opera&ved=2ahUKEwjnlovikPnvAhVICuwKHa1AD00QMygCegUIARCwAQ");
-        Bitmap val = BitmapFactory.decodeStream(url.openConnection().getInputStream());*/
-        /*for (int i = 0; i < 20; i++) {
-            products.add(new Product("amog", "us", 3000d, ));
-        }*/
+    private void initiliazeData(Boolean allProducts, Boolean recommendByCosineSimilarity, Boolean recommendByPearsonCorrelation, Boolean recommendByStandardError) {
+        if (allProducts) {
+            if (category != null) {
+                WebService.getInstance().getProductApi().getProductsByCategoryId(category.getId()).enqueue(new Callback<List<Product>>() {
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        products = response.body();
+                        productAdapter = new ProductAdapter(listener, getContext(), products);
+                        recyclerView.setAdapter(productAdapter);
+                    }
 
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+                        Toast.makeText(getContext(), "Category null", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                WebService.getInstance().getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        products = response.body();
+                        productAdapter = new ProductAdapter(listener, getContext(), products);
+                        recyclerView.setAdapter(productAdapter);
+                    }
 
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                    }
+                });
+            }
+        }
+        if (recommendByCosineSimilarity) {
+            WebService.getInstance().getProductApi().getProductsByCosineSimilarity(((MainActivity) getActivity()).getUser().getUserToken(), ((MainActivity) getActivity()).getUser().getId()).enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                    products = response.body();
+                    productAdapter = new ProductAdapter(listener, getContext(), products);
+                    recyclerView.setAdapter(productAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                }
+            });
+        }
+        if (recommendByStandardError) {
+            WebService.getInstance().getProductApi().getProductsByMSE(((MainActivity) getActivity()).getUser().getUserToken(), ((MainActivity) getActivity()).getUser().getId()).enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                    products = response.body();
+                    productAdapter = new ProductAdapter(listener, getContext(), products);
+                    recyclerView.setAdapter(productAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                }
+            });
+        }
+        if (recommendByPearsonCorrelation) {
+            WebService.getInstance().getProductApi().getProductsByPearsonCorrelation(((MainActivity) getActivity()).getUser().getUserToken(), ((MainActivity) getActivity()).getUser().getId()).enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                    products = response.body();
+                    productAdapter = new ProductAdapter(listener, getContext(), products);
+                    recyclerView.setAdapter(productAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                }
+            });
+        }
+
+        refreshLayout.setRefreshing(false);
+
+    }
+
+    @Override
+    public void onRefresh() {
+        initiliazeData(true, false, false, false);
     }
 }

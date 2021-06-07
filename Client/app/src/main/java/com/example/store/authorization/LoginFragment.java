@@ -2,6 +2,7 @@ package com.example.store.authorization;
 
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.store.MainActivity;
 import com.example.store.R;
+import com.example.store.product.ProductFragment;
 import com.example.store.user.User;
 import com.example.store.utils.TextValidator;
 import com.example.store.web.WebService;
-
-import java.util.Objects;
-import java.util.function.Consumer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,10 +26,9 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
-    private EditText email, password;
+    EditText email, password;
 
-    private Button login;
-
+    Button login;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,21 +48,29 @@ public class LoginFragment extends Fragment {
     private void loginEvent() {
         if (TextValidator.emailValidation(email.getText()) && TextValidator.passwordValidation(password.getText())) {
             String authHeader = "Basic " + android.util.Base64.encodeToString((email.getText().toString() + ":" + password.getText().toString()).getBytes(), Base64.NO_WRAP);
-
             WebService.getInstance().getUserApi().getUserByEmail(authHeader).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.body() != null) {
-                        /*User user = new User();
+                        User user = new User();
 
                         user.setId(response.body().getId());
                         user.setFirstName(response.body().getFirstName());
                         user.setLastName(response.body().getLastName());
                         user.setEmail(response.body().getEmail());
-                        user.setPassword(response.body().getPassword());
-                        user.setRoles(response.body().getRoles());*/
+                        user.setPassword(password.getText().toString());
+                        user.setRoles(response.body().getRoles());
 
-                        ((MainActivity) getActivity()).setUser(response.body());
+                        ((MainActivity) getActivity()).setUser(user);
+
+                        FragmentTransaction fragmentTransaction = getActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
+                        fragmentTransaction.replace(R.id.authorization, ProductFragment.newInstance());
+                        fragmentTransaction.commit();
+
+                        Toast.makeText(getActivity(), "You are authorized", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getContext(), R.string.error_login, Toast.LENGTH_LONG).show();
                     }
@@ -71,19 +78,15 @@ public class LoginFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-//                 Toast.makeText(getContext(), R.string.error_login, Toast.LENGTH_LONG).show();
+                    Log.d("Login", "onFailure: ");
+                    Toast.makeText(getContext(), R.string.error_login, Toast.LENGTH_LONG).show();
                 }
             });
-        } else {
-            Toast.makeText(getContext(), R.string.error_login, Toast.LENGTH_LONG).show();
+        }
+        if (((MainActivity) getActivity()).getUser() != null) {
+
         }
     }
-
-    /*private Consumer<View> sss() {
-        return x -> {
-
-        };
-    }*/
 
     public static LoginFragment newInstance() {
         return new LoginFragment();

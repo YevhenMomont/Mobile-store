@@ -1,13 +1,17 @@
 
-Z
-java:S1874f">Remove this use of "startActivityForResult"; it is deprecated.(°£ÅD8åù­¹”/
-E
-java:S1604@"(Make this anonymous inner class a lambda(°¯èù8ª¾³½”/
-]	java:S125E"<This block of commented-out lines of code should be removed.(½İş€üÿÿÿÿ8ª¾³½”/
-W	java:S125]"<This block of commented-out lines of code should be removed.(ÚäÜE8•£§¼”/
-X	java:S125v"<This block of commented-out lines of code should be removed.(³Å¾ğ8•£§¼”/
-W	java:S125j"<This block of commented-out lines of code should be removed.(õÓQ8•£§¼”/
-]	java:S125/"<This block of commented-out lines of code should be removed.(£÷÷¡ÿÿÿÿÿ8•£§¼”/
-]	java:S125G"<This block of commented-out lines of code should be removed.(È¨¦¶úÿÿÿÿ8ª¾³½”/
+W
+java:S1144¤"9Remove this unused private "pickImageFromGallery" method.(ƒ×Å8¸¡Ë•œ/
+m
+java:S1301}"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8¦ı­æ–/
+[
+java:S1874§">Remove this use of "startActivityForResult"; it is deprecated.(°£ÅD8¶¤Š•/
+¤
+java:S1186½"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(èÉ¬èúÿÿÿÿ8µß½•/
 K
-java:S1659+")Declare "description" on a separate line.( ïŒìúÿÿÿÿ8åù­¹”/
+java:S16597")Declare "description" on a separate line.(» ğ…şÿÿÿÿ8¶¤Š•/
+I
+java:S16597"'Declare "imageView" on a separate line.(» ğ…şÿÿÿÿ8æÂÊ•œ/
+]	java:S1255"<This block of commented-out lines of code should be removed.(ûÓÆøÿÿÿÿÿ8ûÕÚ•œ/
+]	java:S1255"<This block of commented-out lines of code should be removed.(ûÓÆøÿÿÿÿÿ8ûÕÚ•œ/
+]	java:S125\"<This block of commented-out lines of code should be removed.(Î•öùÿÿÿÿ8¸¡Ë•œ/
+]	java:S1255"<This block of commented-out lines of code should be removed.(ûÓÆøÿÿÿÿÿ8ûÕÚ•œ/

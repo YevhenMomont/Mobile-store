@@ -9,7 +9,17 @@ public interface ProductService {
 
 	List<ProductDto> findAllProducts();
 
-	ProductDto findUserById(UUID uuid);
+	List<ProductDto> findAllProductsByCategoryId(UUID uuid);
+
+	List<ProductDto> findAllByUuidIn(List<UUID> uuids);
+
+	List<ProductDto> findAllProductsByCosineSimilarity(UUID uuid);
+
+	List<ProductDto> findAllProductsByMSE(UUID uuid);
+
+	List<ProductDto> findAllProductsByPearsonCorrelation(UUID uuid);
+
+	ProductDto findProductById(UUID uuid);
 
 	void deleteProduct(UUID uuid);
 

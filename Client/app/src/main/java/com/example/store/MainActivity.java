@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.store.authorization.AuthorizationFragment;
-import com.example.store.catalog.CatalogFragment;
+import com.example.store.authorization.LogoutFragment;
+import com.example.store.catalog.CategoryCreatingFragment;
+import com.example.store.catalog.CategoryFragment;
 import com.example.store.product.ProductCreatingFragment;
 import com.example.store.product.ProductFragment;
 import com.example.store.user.User;
@@ -32,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
-//        bottomNavigationView.getMenu().getItem(R.id.action_favorite).setVisible(false);
-
         loadFragment(ProductFragment.newInstance());
     }
 
@@ -44,10 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(ProductFragment.newInstance());
                 return true;
             case R.id.action_catalog:
-                loadFragment(CatalogFragment.newInstance());
+                loadFragment(CategoryFragment.newInstance());
                 return true;
             case R.id.action_add:
                 if (user != null) {
+                    if (user.isAdmin()) {
+                        loadFragment(CategoryCreatingFragment.newInstance());
+                        return true;
+                    }
                     if (user.isUser()) {
                         loadFragment(ProductCreatingFragment.newInstance());
                         return true;
@@ -58,13 +62,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_account:
                 if (user != null) {
                     if (user.isUser()) {
-
+                        new LogoutFragment().show(getSupportFragmentManager(), "logout");
+                        return true;
                     }
                 }
                 loadFragment(AuthorizationFragment.newInstance());
-                break;
+                return true;
             default:
-                loadFragment(ProductFragment.newInstance());
+                loadFragment(AuthorizationFragment.newInstance());
         }
         return false;
     };
@@ -88,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUser(User user) {
         MainActivity.user = user;
-        loadFragment(ProductFragment.newInstance());
-//        bottomNavigationView.getMenu().getItem(R.id.action_favorite).setVisible(true);
     }
 
     private void loadFragment(Fragment fragment) {

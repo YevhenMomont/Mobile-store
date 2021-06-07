@@ -1,25 +1,19 @@
 package com.example.store.authorization;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
 import com.example.store.R;
-import com.example.store.web.WebService;
 
 public class AuthorizationFragment extends Fragment {
 
-    private TextView register, login;
-
-    private WebService service;
+    TextView register, login;
 
     public static AuthorizationFragment newInstance() {
         return new AuthorizationFragment();
@@ -53,7 +47,8 @@ public class AuthorizationFragment extends Fragment {
     }
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);;
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
+
         fragmentTransaction.replace(R.id.authorization, fragment);
         fragmentTransaction.commit();
     }

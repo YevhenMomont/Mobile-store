@@ -1,11 +1,15 @@
 package com.example.store.product;
 
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,23 +18,39 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.store.MainActivity;
 import com.example.store.R;
+import com.example.store.order.Record;
+import com.example.store.user.User;
+import com.example.store.web.WebService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProductDetailFragment extends Fragment {
 
-    private static final int IMAGE_PICK_CODE = 1000;
-    private static final int PERMISSION_CODE = 1001;
-
     private Product product;
 
-    ImageView imageView, basket;
+    ImageView imageView;
 
     TextView name, desc, price;
 
-    private ActionBar actionBar;
+    ActionBar actionBar;
 
-    private FragmentTransaction fragmentTransaction;
+    BottomNavigationView bottomNavigationView;
+
+    FragmentTransaction fragmentTransaction;
+
+    RatingBar ratingBar;
+
+    Button purchaseButton, editButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,55 +63,103 @@ public class ProductDetailFragment extends Fragment {
             actionBar.setHomeButtonEnabled(true);
         }
 
+        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+        bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setVisibility(View.GONE);
+
         imageView = view.findViewById(R.id.product_image);
 
         name = view.findViewById(R.id.product_name);
         desc = view.findViewById(R.id.product_description);
         price = view.findViewById(R.id.product_price);
+        ratingBar = view.findViewById(R.id.product_rating);
 
-        basket = view.findViewById(R.id.basket);
+        purchaseButton = view.findViewById(R.id.purchaseButton);
+
+        editButton = view.findViewById(R.id.go_to_edit_product);
 
         product = (Product) getArguments().getSerializable("product");
 
-        name.setText(product.getName());
+        name.setText(product.getTitle());
         desc.setText(product.getDescription());
         price.setText(String.valueOf(product.getPrice()));
 
-        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        User user = ((MainActivity) getActivity()).getUser();
 
-        basket.setOnClickListener(v -> Toast.makeText(getContext(), "ssss", Toast.LENGTH_LONG).show());
+        if (user == null) {
+            purchaseButton.setVisibility(View.INVISIBLE);
+        } else {
+            if (product.getCreatedBy().equals(user.getId()) || user.isAdmin()) {
+                editButton.setVisibility(View.VISIBLE);
+            }
+        }
 
-        /*ActionBar actionBar = getActivity().getActionBar();
 
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-*/
+        Glide.with(view.getContext())
+                .load(product.getImageUrl())
+                .into(imageView)
+        ;
+        ;
 
+        purchaseButton.setOnClickListener(v -> purchaseEvent(user));
 
-        /*imageView = view.findViewById(R.id.image_view);
-        button = view.findViewById(R.id.select_image);
-
-        button.setOnClickListener(new View.OnClickListener() {
+        editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                        pickImageFromGallery();
-//                        requestPermissions(permissions, PERMISSION_CODE);
-                    } else {
-                        Toast.makeText(v.getContext(), "Error", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });*/
+                Bundle args = new Bundle();
+                args.putSerializable("product", product);
+                ProductEditingFragment productEditingFragment = new ProductEditingFragment();
 
+                productEditingFragment.setArguments(args);
+
+                fragmentTransaction.replace(getId(), productEditingFragment);
+                fragmentTransaction.commit();
+            }
+        });
 
         return view;
     }
 
+    private void purchaseEvent(User user) {
+        user.getPurchasedProducts().add(product.getUuid());
+
+        WebService.getInstance().getUserApi().updateUser(user.getUserToken(), user).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Toast.makeText(getContext(), "Success purchased product", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        Record record = new Record();
+
+        record.setProductId(product.getUuid());
+        record.setUserId(user.getId());
+        record.setRatingByUser(ratingBar.getRating());
+
+        WebService.getInstance().getRecordApi().postRecord(user.getUserToken(), record).enqueue(new Callback<Record>() {
+            @Override
+            public void onResponse(Call<Record> call, Response<Record> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Record> call, Throwable t) {
+
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         switch (item.getItemId()) {
             case R.id.action_home:
                 fragmentTransaction.replace(getId(), ProductFragment.newInstance());
@@ -102,34 +170,6 @@ public class ProductDetailFragment extends Fragment {
 
         }
     }
-
-    /*private void pickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICK_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == IMAGE_PICK_CODE) {
-            imageView.setImageURI(data.getData());
-
-        }
-    }*/
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickImageFromGallery();
-                }
-                else {
-                    Toast.makeText(getActivity(), "Denied", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }*/
 
     public static ProductDetailFragment newInstance() {
         return new ProductDetailFragment();

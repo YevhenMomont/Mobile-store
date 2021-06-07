@@ -1,5 +1,6 @@
 package meo.store.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,14 +42,15 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public void saveCategory(CategoryDto categoryDto) {
+	public CategoryDto saveCategory(CategoryDto categoryDto) {
 		Category category = new Category();
 
-		category.setUuid(UUID.randomUUID());
+		category.setId(UUID.randomUUID());
 		category.setTitle(categoryDto.getTitle());
 		category.setDescription(categoryDto.getDescription());
+		category.setCreatedAt(LocalDateTime.now());
 
-		repository.save(category);
+		return mapper.categoryToDto(repository.save(category));
 	}
 
 	@Override

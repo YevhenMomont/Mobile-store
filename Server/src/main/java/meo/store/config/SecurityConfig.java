@@ -1,6 +1,7 @@
 package meo.store.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Qualifier("userDetailsServiceImpl")
 	@Autowired
 	private UserDetailsService userDetailsService;
 
@@ -24,19 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/users").permitAll()
+				.antMatchers(HttpMethod.GET, "/products").permitAll()
+				.antMatchers(HttpMethod.GET, "/categories").permitAll()
+				.antMatchers(HttpMethod.GET, "/categories/*/products").permitAll()
 				.anyRequest()
 				.authenticated()
 				.and().httpBasic();
-		/*http.csrf().disable()
-				.authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/users").permitAll()
-				.and()
-				.httpBasic()
-				.and()
-				.authorizeRequests()
-				.anyRequest()
-				.authenticated();*/
-//		http.authorizeRequests().antMatchers("/users").permitAll();
 	}
 
 	@Override

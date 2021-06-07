@@ -1,15 +1,10 @@
 
-E	java:S108<")Either remove or fill this block of code.(œ”Ïö8òçØ¼”/
 €
-java:S1450"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8©¶Ù¼”/
-L
-java:S1066<"/Merge this if statement with the enclosing one.(œ”Ïö8òçØ¼”/
+java:S1450"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8©¶Ù¼”/
 X
-java:S2696Z"6Make the enclosing method "static" or remove this set.(Ë¨æúÿÿÿÿÿ8­ÑéÀ“/
-X	java:S125#"<This block of commented-out lines of code should be removed.(Ã©Ñì8©¬İì“/
+java:S2696_"6Make the enclosing method "static" or remove this set.(Ë¨æúÿÿÿÿÿ8ó¹¹²˜/
 m
-java:S1301J"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8ú²£ƒ/
-Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±
-]	java:S125\"<This block of commented-out lines of code should be removed.(ÊÎòÎüÿÿÿÿ8©¶Ù¼”/
+java:S1301O"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8ó¹¹²˜/
+Q	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±
 L
-java:S10663"/Merge this if statement with the enclosing one.(œ”Ïö8òçØ¼”/
+java:S1066@"/Merge this if statement with the enclosing one.(œ”Ïö8ó¹¹²˜/

@@ -2,7 +2,6 @@ package meo.store.controllers;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.springframework.security.core.Authentication;
@@ -25,7 +24,9 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping(value = UserUrl.RESOURCE_NAME)
-	public List<UserDto> getUsers() {return userService.findAllUsers();}
+	public List<UserDto> findAllUsers() {
+		return userService.findAllUsers();
+	}
 
 	@GetMapping(value = UserUrl.GET_BY_ID)
 	public UserDto findUserById(@PathVariable UUID uuid) {
@@ -33,11 +34,18 @@ public class UserController {
 	}
 
 	@GetMapping(value = UserUrl.GET_BY_EMAIL)
-	public UserDto getUser(Authentication authentication) {return userService.findUserByEmail(((User) authentication.getPrincipal()).getUsername());}
+	public UserDto getUser(Authentication authentication) {
+		return userService.findUserByEmail(((User) authentication.getPrincipal()).getUsername());
+	}
 
 	@PostMapping(value = UserUrl.CREATE)
 	public UserDto saveUser(@Valid @RequestBody UserDto userDto) {
 		return userService.saveUser(userDto);
+	}
+
+	@PostMapping(value = UserUrl.UPDATE)
+	public UserDto updateUser(@RequestBody UserDto userDto) {
+		return userService.updateUser(userDto);
 	}
 
 }

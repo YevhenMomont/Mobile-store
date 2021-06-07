@@ -1,6 +1,8 @@
 package meo.store.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,9 +39,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto findUserById(UUID uuid) {
-		return repository.findById(uuid)
-				.map(mapper::dtoToUser)
-				.orElseThrow();
+		return mapper.dtoToUser(repository.findById(uuid)
+				.orElseThrow());
 	}
 
 	@Override
@@ -63,14 +64,27 @@ public class UserServiceImpl implements UserService {
 		user.setFirstName(userDto.getFirstName());
 		user.setLastName(userDto.getLastName());
 		user.setPassword(encoder.encode(userDto.getPassword()));
+		user.setCreatedAt(LocalDateTime.now());
 		user.getRoles().add(Role.USER);
+//		user.getRoles().addAll(Set.of(Role.USER, Role.ADMIN));
 
 		return mapper.dtoToUser(repository.save(user));
 	}
 
 	@Override
-	public UserDto updateUser(UserDto user) {
-		return mapper.dtoToUser(repository.save(mapper.userToDto(user)));
+	public UserDto updateUser(UserDto userDto) {
+		User user = new User();
+
+		user.setId(userDto.getId());
+		user.setEmail(userDto.getEmail());
+		user.setFirstName(userDto.getFirstName());
+		user.setLastName(userDto.getLastName());
+		user.setPassword(encoder.encode(userDto.getPassword()));
+		user.setPurchasedProducts(userDto.getPurchasedProducts());
+		user.setCreatedAt(userDto.getCreatedAt());
+		user.setRoles(userDto.getRoles());
+
+		return mapper.dtoToUser(repository.save(user));
 	}
 
 }

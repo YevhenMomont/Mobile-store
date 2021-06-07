@@ -1,0 +1,9 @@
+
+q
+java:S3252""OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(Ώτίψÿÿÿÿ8ύ§ζ»•/
+m
+java:S1301!"KReplace this "switch" statement by "if" statements to increase readability.(φΫ«°ώÿÿÿÿ8ύ§ζ»•/
+l
+java:S3252,"OUse static access with "android.content.DialogInterface" for "BUTTON_NEGATIVE".(ώλ8ύ§ζ»•/
+C	java:S131!""Add a default case to this switch.(φΫ«°ώÿÿÿÿ8ύ§ζ»•/
+]	java:S125("<This block of commented-out lines of code should be removed.(Ε„έΎψÿÿÿÿ8Ά·Κ™/

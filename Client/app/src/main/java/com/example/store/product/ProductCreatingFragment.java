@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,15 +15,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.store.MainActivity;
 import com.example.store.R;
-import com.example.store.catalog.Catalog;
+import com.example.store.catalog.Category;
+import com.example.store.catalog.CategoryCreatingFragment;
 import com.example.store.web.WebService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +39,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.ContentValues.TAG;
+
 
 public class ProductCreatingFragment extends Fragment {
 
@@ -38,62 +48,117 @@ public class ProductCreatingFragment extends Fragment {
 
     Spinner spinner;
 
-    ImageView imageView;
+    TextView goToCategoryCreating;
 
-    EditText title, description;
+//    ImageView imageView;
+
+    EditText title, description, imageView;
 
     Button create;
 
-//    private List<Catalog> catalogs;
+    ActionBar actionBar;
 
-    List<String> catalogs = new ArrayList<>(List.of("1", "2", "3", "4"));
+    BottomNavigationView bottomNavigationView;
 
+    private List<Category> categories = new ArrayList<>();
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_creating, container, false);
 
+        actionBar = ((MainActivity) getActivity()).getSupportBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+
+        bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setVisibility(View.GONE);
+
         spinner = view.findViewById(R.id.spinner);
+
         spinnerInitialize();
 
-        imageView = view.findViewById(R.id.imageViewProductCreating);
+        goToCategoryCreating = view.findViewById(R.id.goToCreateCatalog);
 
         title = view.findViewById(R.id.editTextProductTitle);
         description = view.findViewById(R.id.editTextProductDesc);
+        imageView = view.findViewById(R.id.imageViewProductCreating);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+/*
+        imageView.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
 //                        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                        pickImageFromGallery();
+                    pickImageFromGallery();
 //                        requestPermissions(permissions, PERMISSION_CODE);
-                    } else {
-                        Toast.makeText(v.getContext(), "Error", Toast.LENGTH_LONG).show();
-                    }
+                } else {
+                    Toast.makeText(v.getContext(), "Error", Toast.LENGTH_LONG).show();
                 }
             }
         });
+*/
 
-        create = view.findViewById(R.id.creatingButton);
+        create = view.findViewById(R.id.creatingProductButton);
 
         create.setOnClickListener(v -> createProduct());
 
+        if (((MainActivity) getActivity()).getUser().isAdmin()) {
+            goToCategoryCreating.setVisibility(View.VISIBLE);
+            goToCategoryCreating.setOnClickListener(v -> {
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                fragmentTransaction.replace(getId(), CategoryCreatingFragment.newInstance());
+                fragmentTransaction.commit();
+            });
+        }
+
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        switch (item.getItemId()) {
+            case R.id.action_home:
+                fragmentTransaction.replace(getId(), ProductFragment.newInstance());
+                fragmentTransaction.commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void createProduct() {
         Product product = new Product();
 
-        product.setName(title.getText().toString());
+        product.setTitle(title.getText().toString());
         product.setDescription(description.getText().toString());
         product.setPrice(Math.random());
-//        product.setCategoryId(catalogs.stream().filter(catalog -> catalog.getName().equals(spinner.getTransitionName())).map(catalog -> catalog.getId()).findFirst().orElse(null));
+        product.setCategoryId(categories.stream().filter(catalog -> catalog.getTitle().equals(spinner.getSelectedItem().toString())).map(Category::getId).findFirst().orElse(null));
         product.setCreatedBy(((MainActivity) getActivity()).getUser().getId());
+        product.setImageUrl(imageView.getText().toString());
 
-        WebService.getInstance().getProductApi().postProduct(product);
+        WebService.getInstance().getProductApi().postProduct(((MainActivity) getActivity()).getUser().getUserToken(), product).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                Log.d(TAG, "onResponse: " + response);
+                Toast.makeText(getContext(), "Success created", Toast.LENGTH_SHORT).show();
+
+                title.setText("");
+                description.setText("");
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.fillInStackTrace());
+            }
+        });
     }
 
     private void pickImageFromGallery() {
@@ -103,24 +168,30 @@ public class ProductCreatingFragment extends Fragment {
     }
 
     private void spinnerInitialize() {
-        /*WebService.getInstance().getCatalogApi().getCatalogs().enqueue(new Callback<List<Catalog>>() {
-            @Override
-            public void onResponse(Call<List<Catalog>> call, Response<List<Catalog>> response) {
-                catalogs = response.body();
-            }
+        WebService.getInstance()
+                .getCategoryApi()
+                .getCategories()
+                .enqueue(new Callback<List<Category>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                        if (response.body() != null) {
+                            categories = response.body();
 
-            @Override
-            public void onFailure(Call<List<Catalog>> call, Throwable t) {
+                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories.stream().map(Category::getTitle).collect(Collectors.toList()));
+                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            }
-        });*/
+                            spinner.setAdapter(arrayAdapter);
+                        }
+                    }
 
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, catalogs.stream().map(Catalog::getName).collect(Collectors.toList()));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, catalogs);
+                    @Override
+                    public void onFailure(Call<List<Category>> call, Throwable t) {
 
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    }
+                });
 
-        spinner.setAdapter(arrayAdapter);
+
     }
 
     public static ProductCreatingFragment newInstance() {

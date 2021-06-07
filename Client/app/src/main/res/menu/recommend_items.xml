@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_recommendation"
+        android:orderInCategory="2"
+        android:title="Get recommendation">
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/open_cosine_similarity"
+                android:orderInCategory="1"
+                android:title="Cosine Similarity" />
+            <item
+                android:id="@+id/open_mse"
+                android:orderInCategory="2"
+                android:title="MSE" />
+            <item
+                android:id="@+id/open_pearson_correlation"
+                android:orderInCategory="3"
+                android:title="Pearson Correlation" />
+        </group>
+    </item>
+</menu>

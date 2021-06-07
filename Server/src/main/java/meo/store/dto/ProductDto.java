@@ -1,5 +1,6 @@
 package meo.store.dto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -22,7 +23,17 @@ public class ProductDto {
 
 	private String description;
 
+	private double price;
+
 	private UUID categoryId;
 
 	private UUID createdBy;
+
+	private Double rating;
+
+	@Null
+	private LocalDateTime createdAt;
+
+	private String imageUrl;
+
 }

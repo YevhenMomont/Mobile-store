@@ -1,9 +1,13 @@
 package meo.store.persistance.domain;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,5 +33,10 @@ public class User {
 	private String password;
 
 	private Set<Role> roles = new HashSet<>();
+
+	private Set<UUID> purchasedProducts = new HashSet<>();
+
+	@CreatedDate
+	private LocalDateTime createdAt;
 
 }

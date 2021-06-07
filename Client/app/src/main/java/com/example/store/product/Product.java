@@ -1,5 +1,8 @@
 package com.example.store.product;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -12,16 +15,37 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Product implements Serializable {
 
-    private UUID id;
+    @SerializedName("uuid")
+    @Expose
+    private UUID uuid;
 
-    private String name;
+    @SerializedName("title")
+    @Expose
+    private String title;
 
+    @SerializedName("description")
+    @Expose
     private String description;
 
+    @SerializedName("price")
+    @Expose
     private double price;
 
+    @SerializedName("categoryId")
+    @Expose
     private UUID categoryId;
 
+    @SerializedName("rating")
+    @Expose
+    private float rating;
+
+    @SerializedName("createdBy")
+    @Expose
     private UUID createdBy;
+
+    @SerializedName("imageUrl")
+    @Expose
+    private String imageUrl;
+
 
 }

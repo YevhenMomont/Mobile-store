@@ -30,6 +30,8 @@ public class WebService {
 
     public ProductApi getProductApi() {return retrofit.create(ProductApi.class);}
 
-    public CatalogApi getCatalogApi() {return retrofit.create(CatalogApi.class);}
+    public CategoryApi getCategoryApi() {return retrofit.create(CategoryApi.class);}
+
+    public RecordApi getRecordApi() {return retrofit.create(RecordApi.class);}
 
 }

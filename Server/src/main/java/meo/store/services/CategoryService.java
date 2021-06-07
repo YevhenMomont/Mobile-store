@@ -13,7 +13,7 @@ public interface CategoryService {
 
 	void deleteCategory(UUID uuid);
 
-	void saveCategory(CategoryDto CategoryDto);
+	CategoryDto saveCategory(CategoryDto CategoryDto);
 
 	CategoryDto updateCategory(CategoryDto CategoryDto);
 	

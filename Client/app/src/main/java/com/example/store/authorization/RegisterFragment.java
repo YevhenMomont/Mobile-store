@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.store.MainActivity;
 import com.example.store.R;
@@ -26,18 +28,16 @@ import retrofit2.Response;
 
 public class RegisterFragment extends Fragment {
 
-    private EditText firstName, lastName, email, password;
+    EditText firstName, lastName, email, password;
 
-    private TextView emailValid;
+    TextView emailValid;
 
-    private Button register;
+    Button register;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
-
-//        MainActivity activity = (MainActivity) getActivity();
 
         firstName = view.findViewById(R.id.editTextFirstName);
         lastName = view.findViewById(R.id.editTextLastName);
@@ -79,7 +79,6 @@ public class RegisterFragment extends Fragment {
 
     private void registerEvent() {
         if (TextValidator.passwordValidation(password.getText())) {
-//            User user = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(), password.getText().toString());
             User user = new User();
 
             user.setEmail(email.getText().toString());
@@ -93,15 +92,23 @@ public class RegisterFragment extends Fragment {
                     .enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
-                            Log.d("Register complete", response.toString());
                             if (response.body() != null) {
-                                ((MainActivity) getActivity()).setUser(response.body());
+//                                ((MainActivity) getActivity()).setUser(response.body());
+
+                                FragmentTransaction fragmentTransaction = getActivity()
+                                        .getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
+                                fragmentTransaction.replace(R.id.authorization, LoginFragment.newInstance());
+                                fragmentTransaction.commit();
+
+                                Toast.makeText(getContext(), "Success register", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
-                            Log.d("Register failed", t.getLocalizedMessage(), t);
+                            Toast.makeText(getContext(), "Register failed", Toast.LENGTH_SHORT).show();
                         }
                     });
         }

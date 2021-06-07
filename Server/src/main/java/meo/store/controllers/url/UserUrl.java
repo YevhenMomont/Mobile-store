@@ -14,7 +14,7 @@ public interface UserUrl {
 
 	String CREATE = RESOURCE_NAME;
 
-	String UPDATE = RESOURCE_NAME + USER_ID;
+	String UPDATE = RESOURCE_NAME + USER_LOGIN;
 
 	String DELETE = RESOURCE_NAME + USER_ID;
 

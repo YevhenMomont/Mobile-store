@@ -1,7 +1,9 @@
 package meo.store.persistance.domain;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,8 +24,17 @@ public class Product {
 
 	private String description;
 
+	private double price;
+
 	private UUID categoryId;
 
 	private UUID createdBy;
+
+	private Double rating;
+
+	@CreatedDate
+	private LocalDateTime createdAt;
+
+	private String imageUrl;
 
 }

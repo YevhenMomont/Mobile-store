@@ -1,11 +1,20 @@
 
->
-java:S1604G"(Make this anonymous inner class a lambda(Ø¡Úü
-v
-java:S1450"[Remove the "recyclerView" field and declare it as a local variable in the relevant methods.(¿á© ýÿÿÿÿ
->
-java:S16042"(Make this anonymous inner class a lambda(ë‘˜Ë
-w
-java:S1450"\Remove the "refreshLayout" field and declare it as a local variable in the relevant methods.(†Á±ßøÿÿÿÿ
-V	java:S125U"<This block of commented-out lines of code should be removed.(‰äµøÿÿÿÿ
-]	java:S125W"<This block of commented-out lines of code should be removed.(ä’üÿÿÿÿ8—£§¼”/
+Ÿ
+java:S1186×"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œÈÁ¯8úžèÉ™/
+Ÿ
+java:S1186È"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œÈÁ¯8úžèÉ™/
+C	java:S131z""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8è²ëþ˜/
+H
+java:S5411¯"*Use the primitive boolean expression here.(›´Ä¶8©ˆˆ„™/
+H
+java:S5411¾"*Use the primitive boolean expression here.(óÄËƒ8úžèÉ™/
+Ÿ
+java:S1186¹"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œÈÁ¯8©ˆˆ„™/
+Ÿ
+java:S1186©"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œÈÁ¯8‹¤†Ê™/
+M
+java:S5411"*Use the primitive boolean expression here.(Žá¢´üÿÿÿÿ8î›’€™/
+S
+java:S1874L"6Remove this use of "setColorScheme"; it is deprecated.(Ò—ê©8’ÇÖÛ˜/
+H
+java:S5411Í"*Use the primitive boolean expression here.(µø½°8úžèÉ™/

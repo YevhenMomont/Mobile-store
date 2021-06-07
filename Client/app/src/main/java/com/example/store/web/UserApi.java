@@ -16,15 +16,18 @@ import retrofit2.http.Path;
 public interface UserApi {
 
     @GET(UserUrl.RESOURCE_NAME)
-    Call<List<User>> getUsers();
+    Call<List<User>> getUsers(@Header("Authorization") String authHeader);
 
     @GET(UserUrl.GET_BY_ID)
-    Call<User> getUser(@Path("id") UUID id);
+    Call<User> getUser(@Header("Authorization") String authHeader, @Path("id") UUID id);
 
     @GET(UserUrl.GET_BY_EMAIL)
     Call<User> getUserByEmail(@Header("Authorization") String authHeader);
 
     @POST(UserUrl.CREATE)
     Call<User> postUser(@Body User user);
+
+    @POST(UserUrl.UPDATE)
+    Call<User> updateUser(@Header("Authorization") String authHeader, @Body User user);
 
 }
